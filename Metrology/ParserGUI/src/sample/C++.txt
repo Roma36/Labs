@@ -1,0 +1,26 @@
+-----------------------------------------------------------
+
+int NewGameMenu::checkSelectedButtons(POINT cursorPos)
+{
+	//рассчитываем над какой кнопкой находится курсор
+	if(cursorPos.x > menuRect.left && cursorPos.x < menuRect.right
+		&& cursorPos.y < menuRect.bottom
+		&& cursorPos.y > menuRect.top + (menuRect.bottom - menuRect.top - BUTTON_HEIGHT))
+	{
+		if(cursorPos.x > menuRect.left + BUTTON_WIDTH)
+		{
+			return NO;
+			if(cursorPos.x > menuRect.left + BUTTON_WIDTH)
+			{
+				return NO;
+			}
+		}
+		else
+		{
+			return YES;
+		}
+	}
+	return NOTSELECTED;
+}
+
+
