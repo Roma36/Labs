@@ -28,7 +28,7 @@ public class Jilba extends Metrics {
     private Pattern comparisonOperatorPattern = Pattern.compile("[a-zA-Z \t0-9)](==|!=|>|<|>=|<=)[a-zA-Z \t0-9(;]");
     private Pattern logicalOperatorPattern = Pattern.compile("(![a-zA-Z \t(]|[a-zA-Z \t0-9)](&&|[|][|])[a-zA-Z \t0-9(;])");
     private Pattern cyclicOperatorPattern = Pattern.compile("((for|while)[ \t]*[(]|do[ \t]*[{])");
-    private Pattern otherOperatorsPattern = Pattern.compile("(![a-zA-Z \t(]|[a-zA-Z \t)](~|&|\\||^|<<|>>|->|\\.|->\\*|\\.\\*|\\[|,|sizeof|alignof|typeid)[a-zA-Z \t0-9(;])");
+    private Pattern otherOperatorsPattern = Pattern.compile("(![a-zA-Z \t(]|[a-zA-Z \t)](~|&|\\||\\^|<<|>>|\\.|\\.\\*|\\[|,|instanceof)[a-zA-Z \t0-9(;])");
 
     private ArrayList<String> stringsWithoutComments = new ArrayList<String>();
     protected ArrayList<String> sourceCodeStringsOnly = new ArrayList<String>();
@@ -38,6 +38,7 @@ public class Jilba extends Metrics {
         stringsWithoutComments = super.stringsWithoutComments;
         sourceCodeStringsOnly = super.sourceCodeStringsOnly;
         for(String currentString:stringsWithoutComments){
+            currentString = currentString.replaceAll("\n","");
             allCodeInline+=currentString;
         }
         countOperators();
@@ -163,6 +164,7 @@ public class Jilba extends Metrics {
         if (depth > maxDepth) {
             maxDepth = depth;
         }
+
         if (insideCL) {
             if (matchIfCL.matches()) {
                 int i = getLastOvalBracePos(substring);
@@ -170,10 +172,19 @@ public class Jilba extends Metrics {
             } else if (matchBrace.matches()) {
                 int figureBracePos = getFigureBracePos(substring);
                 int lastFigureBracePos = getLastFigureBracePos(substring);
-                countMaxCLDepth(depth + 1, substring.substring(figureBracePos + 1, lastFigureBracePos - 1), true);
+                countMaxCLDepth(depth + 1, substring.substring(figureBracePos + 1, lastFigureBracePos), false);
                 countMaxCLDepth(depth, substring.substring(lastFigureBracePos + 1), false);
             }else{
-
+                if(matchIfCL.find()){
+                    int ifCLStart = matchIfCL.start();
+                    countMaxCLDepth(depth, substring.substring(ifCLStart), false);
+                }else{
+                    depth++;
+                    if (depth > maxDepth) {
+                        maxDepth = depth;
+                    }
+                    return;
+                }
             }
         } else {
             if (matchIfCL.find()) {

@@ -58,16 +58,17 @@ public class Metrics {
         String allCodeInline = Controller.textToAnalyse.getText();
         String codeWithoutCommentsInline = removeComments(allCodeInline);
         int startPos = 0;
-        for(int i = 0;i<codeWithoutCommentsInline.length();i++){
+        int i = 0;
+        while(i<codeWithoutCommentsInline.length()){
             if((codeWithoutCommentsInline.charAt(i)=='\n')||(i==codeWithoutCommentsInline.length()-1)){
-                String stringToAdd = codeWithoutCommentsInline.substring(startPos,i);
-                if(!stringToAdd.isEmpty()){
+                if(i!=0){
+                    String stringToAdd = codeWithoutCommentsInline.substring(startPos,i+1);
+                    stringToAdd = stringToAdd.replaceAll("\n","");
                     stringsNonComments.add(stringToAdd);
-                }else{
-                    stringsNonComments.add(String.valueOf(codeWithoutCommentsInline.charAt(i)));
+                    startPos = i+1;
                 }
-                startPos = i+1;
             }
+            i++;
         }
         return stringsNonComments;
     }
@@ -85,16 +86,12 @@ public class Metrics {
             if(typeOfComment==0){
                 if((sourceCode.charAt(i)=='/')&&(sourceCode.charAt(i+1)=='/')){
                     typeOfComment=INLINE_COMMENT;
-                    sourceCode = removeCharAt(sourceCode,i);
-                    i++;
-                    sourceCode = removeCharAt(sourceCode,i);
-                    i++;
+                    sourceCode = removeCharAt(sourceCode,i++);
+                    sourceCode = removeCharAt(sourceCode,i++);
                 }else if((sourceCode.charAt(i)=='/')&&(sourceCode.charAt(i+1)=='*')){
                     typeOfComment=BEGINNING_OF_MULTILINE_COMMENT;
-                    sourceCode = removeCharAt(sourceCode,i);
-                    i++;
-                    sourceCode = removeCharAt(sourceCode,i);
-                    i++;
+                    sourceCode = removeCharAt(sourceCode,i++);
+                    sourceCode = removeCharAt(sourceCode,i++);
                 }else{
                     i++;
                 }
@@ -107,17 +104,13 @@ public class Metrics {
                 }else if((sourceCode.charAt(i)=='*')&&(sourceCode.charAt(i+1)=='/')){
                     if(typeOfComment==BEGINNING_OF_MULTILINE_COMMENT){
                         typeOfComment=0;
-                        sourceCode = removeCharAt(sourceCode,i);
-                        i++;
-                        sourceCode = removeCharAt(sourceCode,i);
-                        i++;
+                        sourceCode = removeCharAt(sourceCode,i++);
+                        sourceCode = removeCharAt(sourceCode,i++);
                     }else{
-                        sourceCode = removeCharAt(sourceCode,i);
-                        i++;
+                        sourceCode = removeCharAt(sourceCode,i++);
                     }
                 }else{
-                    sourceCode = removeCharAt(sourceCode,i);
-                    i++;
+                    sourceCode = removeCharAt(sourceCode,i++);
                 }
 
             }

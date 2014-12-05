@@ -21,10 +21,9 @@ public class Sloc extends Metrics {
     private ArrayList<Integer> classesStringsCount = new ArrayList<Integer>();
     private ArrayList<Integer> classesSourceCodeStringsCount = new ArrayList<Integer>();
 
-    private Pattern functionDeclarationPattern = Pattern.compile("((public|private)[ \t]{1,}){0,1}" +
-            "((void|int|[A-Za-z]{1,})[ \t]{1,})[::_A-Za-z]{1,}[ \t]*\\((((void|int|[A-Za-z]{1,})" +
-            "[ \t]{1,})[:&*_A-Za-z]{1,}[ \t]*[,]*)*\\)");
-    private Pattern classDeclarationPattern = Pattern.compile("class[ \t]{1,}[A-Za-z_]{1,}");
+    private Pattern functionDeclarationPattern = Pattern.compile("(public|private|protected)[ t]{1,}" +
+            "(void|int|[A-Za-z_]){1,}[ \\t]{1,}[A-Za-z]{1,}[ \\t]*[(]");
+    private Pattern classDeclarationPattern = Pattern.compile("(.)*class[ \t]{1,}[A-Za-z_]{1,}");
 
     public Sloc(){
         this.allStrings = super.allStrings;
