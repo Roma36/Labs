@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.chart.*?>
+<?import javafx.scene.control.*?>
+<?import java.lang.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="768.0" prefWidth="1366.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sample.Controller">
+   <left>
+      <VBox prefHeight="575.0" prefWidth="350.0" BorderPane.alignment="CENTER">
+         <children>
+            <Button mnemonicParsing="false" onAction="#startSlocButtonClicked" prefHeight="54.0" prefWidth="423.0" text="Start Sloc+" />
+            <ListView fx:id="slocListView" prefHeight="701.0" prefWidth="350.0" />
+         </children>
+      </VBox>
+   </left>
+   <right>
+      <VBox prefHeight="575.0" prefWidth="350.0" BorderPane.alignment="CENTER">
+         <children>
+            <Button mnemonicParsing="false" onAction="#jilbaButtonClicked" prefHeight="54.0" prefWidth="429.0" text="Start Jilba" />
+            <ListView fx:id="jilbaListView" prefHeight="699.0" prefWidth="350.0" />
+         </children>
+      </VBox>
+   </right>
+   <center>
+      <TextArea fx:id="textToAnalyse" prefHeight="575.0" prefWidth="416.0" BorderPane.alignment="CENTER" />
+   </center>
+   <top>
+      <Button mnemonicParsing="false" onAction="#loadButtonClicked" prefHeight="25.0" prefWidth="1410.0" text="Load File" BorderPane.alignment="CENTER" />
+   </top>
+</BorderPane>
