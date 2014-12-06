@@ -14,125 +14,125 @@ public class Sloc extends Metrics {
     private int commentsCount = 0;
     private float commentsPercentage = 0;
 
-    private ArrayList<String> allStrings = new ArrayList<String>();
-    private ArrayList<String> sourceCodeStringsOnly = new ArrayList<String>();
-    private ArrayList<Integer> functionsStringsCount = new ArrayList<Integer>();
-    private ArrayList<Integer> functionsSourceCodeStringsCount = new ArrayList<Integer>();
-    private ArrayList<Integer> classesStringsCount = new ArrayList<Integer>();
-    private ArrayList<Integer> classesSourceCodeStringsCount = new ArrayList<Integer>();
+    private ArrayList < String > allStrings = new ArrayList < String > ();
+    private ArrayList < String > sourceCodeStringsOnly = new ArrayList < String > ();
+    private ArrayList < Integer > functionsStringsCount = new ArrayList < Integer > ();
+    private ArrayList < Integer > functionsSourceCodeStringsCount = new ArrayList < Integer > ();
+    private ArrayList < Integer > classesStringsCount = new ArrayList < Integer > ();
+    private ArrayList < Integer > classesSourceCodeStringsCount = new ArrayList < Integer > ();
 
     private Pattern functionDeclarationPattern = Pattern.compile("(public|private|protected)[ t]{1,}" +
             "(void|int|[A-Za-z_]){1,}[ \\t]{1,}[A-Za-z]{1,}[ \\t]*[(]");
     private Pattern classDeclarationPattern = Pattern.compile("(.)*class[ \t]{1,}[A-Za-z_]{1,}");
 
-    public Sloc(){
+    public Sloc() {
         this.allStrings = super.allStrings;
         stringsCount = this.allStrings.size();
         comments = super.comments;
         sourceCodeStringsOnly = super.sourceCodeStringsOnly;
     }
 
-    public ArrayList<Integer> getFunctionsStringsCount(){
+    public ArrayList < Integer > getFunctionsStringsCount() {
         return functionsStringsCount;
     }
 
-    public ArrayList<Integer> getFunctionsSourceCodeStringsCount(){
+    public ArrayList < Integer > getFunctionsSourceCodeStringsCount() {
         return functionsSourceCodeStringsCount;
     }
 
-    public ArrayList<Integer> getClassesStringsCount(){
+    public ArrayList < Integer > getClassesStringsCount() {
         return classesStringsCount;
     }
 
-    public ArrayList<Integer> getClassesSourceCodeStringsCount(){
+    public ArrayList < Integer > getClassesSourceCodeStringsCount() {
         return classesSourceCodeStringsCount;
     }
 
-    public float getAverage(ArrayList<Integer> myIntegers){
+    public float getAverage(ArrayList < Integer > myIntegers) {
         int sum = 0;
         int numberOfIntegers = myIntegers.size();
-        for(int number:myIntegers){
-            sum+=number;
+        for (int number: myIntegers) {
+            sum += number;
         }
 
-        return (float)sum/(float)numberOfIntegers;
+        return (float) sum / (float) numberOfIntegers;
     }
 
-    public int getStringsCount(){
+    public int getStringsCount() {
         return stringsCount;
     }
 
-    public int getEmptyStringsCount(){
+    public int getEmptyStringsCount() {
         countEmptyStrings();
         return emptyStringsCount;
     }
 
-    public int getCommentsCount(){
+    public int getCommentsCount() {
         countComments();
         return commentsCount;
     }
 
-    public float getCommentsPercentage(){
+    public float getCommentsPercentage() {
         countCommentsPercentage();
-        return (commentsPercentage*100);
+        return (commentsPercentage * 100);
     }
 
-    public float getAverageFunctionsStringsCount(){
+    public float getAverageFunctionsStringsCount() {
         countFunctionsStrings();
         return getAverage(functionsStringsCount);
     }
 
-    public float getAverageFunctionsSourceCodeStringsCount(){
+    public float getAverageFunctionsSourceCodeStringsCount() {
         countFunctionsSourceCodeStrings();
         return getAverage(functionsSourceCodeStringsCount);
     }
 
-    public float getAverageClassesStringsCount(){
+    public float getAverageClassesStringsCount() {
         countClassesStrings();
         return getAverage(classesStringsCount);
     }
 
-    public float getAverageClassesSourceCodeStringsCount(){
+    public float getAverageClassesSourceCodeStringsCount() {
         countClassesSourceCodeStrings();
         return getAverage(classesSourceCodeStringsCount);
     }
 
-    private void countEmptyStrings(){
+    private void countEmptyStrings() {
         emptyStringsCount = 0;
-        for(String currentString:allStrings){
-            if(currentString.isEmpty()){
+        for (String currentString: allStrings) {
+            if (currentString.isEmpty()) {
                 emptyStringsCount++;
             }
         }
     }
 
-    private void countComments(){
+    private void countComments() {
         commentsCount = comments.commentsList.size();
     }
 
-    private void countCommentsPercentage(){
-        commentsPercentage =((float) commentsCount)/((float) stringsCount);
+    private void countCommentsPercentage() {
+        commentsPercentage = ((float) commentsCount) / ((float) stringsCount);
     }
 
-    private void countFunctionsStrings(){
+    private void countFunctionsStrings() {
         functionsStringsCount = getStringsOfBlock(functionDeclarationPattern, stringsWithoutComments);
     }
 
-    private void countFunctionsSourceCodeStrings(){
-        functionsSourceCodeStringsCount = getStringsOfBlock(functionDeclarationPattern,sourceCodeStringsOnly);
+    private void countFunctionsSourceCodeStrings() {
+        functionsSourceCodeStringsCount = getStringsOfBlock(functionDeclarationPattern, sourceCodeStringsOnly);
     }
 
-    private void countClassesStrings(){
+    private void countClassesStrings() {
         classesStringsCount = getStringsOfBlock(classDeclarationPattern, stringsWithoutComments);
 
     }
 
-    private void countClassesSourceCodeStrings(){
-        classesSourceCodeStringsCount = getStringsOfBlock(classDeclarationPattern,sourceCodeStringsOnly);
+    private void countClassesSourceCodeStrings() {
+        classesSourceCodeStringsCount = getStringsOfBlock(classDeclarationPattern, sourceCodeStringsOnly);
     }
 
-    private ArrayList<Integer> getStringsOfBlock(Pattern blockDeclarationPattern, ArrayList<String> sourceToAnalyze){
-        ArrayList<Integer> stringsOfBlockCount = new ArrayList<Integer>();
+    private ArrayList < Integer > getStringsOfBlock(Pattern blockDeclarationPattern, ArrayList < String > sourceToAnalyze) {
+        ArrayList < Integer > stringsOfBlockCount = new ArrayList < Integer > ();
         boolean insideFunction = false;
         boolean openBraceTookPlace = false;
         int braceCount = 0;
@@ -141,37 +141,37 @@ public class Sloc extends Metrics {
         int startIndex = 0;
         int endIndex = 0;
         int i = 0;
-        while(i<sourceToAnalyze.size()){
+        while (i < sourceToAnalyze.size()) {
             String currentString = sourceToAnalyze.get(i);
-            if(insideFunction){
-                if(typeOfString(currentString)==USUAL_STRING){
-                    for(int j = braceInspectionStartPos; j<currentString.length();j++){
-                        if (currentString.charAt(j)=='{'){
+            if (insideFunction) {
+                if (typeOfString(currentString) == USUAL_STRING) {
+                    for (int j = braceInspectionStartPos; j < currentString.length(); j++) {
+                        if (currentString.charAt(j) == '{') {
                             braceCount++;
                             openBraceTookPlace = true;
-                        }else if(currentString.charAt(j)=='}'){
+                        } else if (currentString.charAt(j) == '}') {
                             braceCount--;
                         }
                     }
-                    if((braceCount==0)&&openBraceTookPlace){
+                    if ((braceCount == 0) && openBraceTookPlace) {
                         endIndex = i;
-                        stringsCount = endIndex-startIndex+1;
+                        stringsCount = endIndex - startIndex + 1;
                         stringsOfBlockCount.add(stringsCount);
                         insideFunction = false;
                     }
                     braceInspectionStartPos = 0;
                 }
                 i++;
-            }else{
+            } else {
                 Matcher matchFunctionDeclaration = blockDeclarationPattern.matcher(currentString);
-                if(matchFunctionDeclaration.find()&&(typeOfString(currentString)==USUAL_STRING)){
+                if (matchFunctionDeclaration.find() && (typeOfString(currentString) == USUAL_STRING)) {
                     insideFunction = true;
                     braceInspectionStartPos = matchFunctionDeclaration.end();
                     braceCount = 0;
                     stringsCount = 0;
                     startIndex = i;
                     openBraceTookPlace = false;
-                }else{
+                } else {
                     i++;
                 }
             }

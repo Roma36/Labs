@@ -18,7 +18,7 @@ public class Jilba extends Metrics {
     private int cyclicOperatorCount = 0;
     private int otherOperatorCount = 0;
     private int maxDepth = 0;
-    public String allCodeInline="";
+    public String allCodeInline = "";
     private Pattern patternCL = Pattern.compile("([ \t]*if([ \t]|[(])|[?].+?[:].+)");
     private Pattern ifCLMatchPattern = Pattern.compile("[ \t]*if[ \t]*[(](.){1,}[)](.)*");
     private Pattern braceMatchPattern = Pattern.compile("[ \t]*[{](.)*");
@@ -30,127 +30,127 @@ public class Jilba extends Metrics {
     private Pattern cyclicOperatorPattern = Pattern.compile("((for|while)[ \t]*[(]|do[ \t]*[{])");
     private Pattern otherOperatorsPattern = Pattern.compile("(![a-zA-Z \t(]|[a-zA-Z \t)](~|&|\\||\\^|<<|>>|\\.|\\.\\*|\\[|,|instanceof)[a-zA-Z \t0-9(;])");
 
-    private ArrayList<String> stringsWithoutComments = new ArrayList<String>();
-    protected ArrayList<String> sourceCodeStringsOnly = new ArrayList<String>();
+    private ArrayList < String > stringsWithoutComments = new ArrayList < String > ();
+    protected ArrayList < String > sourceCodeStringsOnly = new ArrayList < String > ();
 
-    public Jilba(){
+    public Jilba() {
         comments = super.comments;
         stringsWithoutComments = super.stringsWithoutComments;
         sourceCodeStringsOnly = super.sourceCodeStringsOnly;
-        for(String currentString:stringsWithoutComments){
-            currentString = currentString.replaceAll("\n","");
-            allCodeInline+=currentString;
+        for (String currentString: stringsWithoutComments) {
+            currentString = currentString.replaceAll("\n", "");
+            allCodeInline += currentString;
         }
         countOperators();
     }
 
-    public int getCL(){
+    public int getCL() {
         return CL;
     }
 
-    public float getRelativeCL(){
-        return (float)CL/(float)numberOfOperators;
+    public float getRelativeCL() {
+        return (float) CL / (float) numberOfOperators;
     }
 
-    public int getNumberOfOperators(){
+    public int getNumberOfOperators() {
         return numberOfOperators;
     }
 
-    public int getMaxDepth(){
-        countMaxCLDepth(-1,allCodeInline,false);
+    public int getMaxDepth() {
+        countMaxCLDepth(-1, allCodeInline, false);
         return maxDepth;
     }
 
-    public void countOperators(){
+    public void countOperators() {
         CL = 0;
         arithmeticOperatorCount = 0;
         compoundAssignmentOperatorCount = 0;
         comparisonOperatorCount = 0;
         cyclicOperatorCount = 0;
         otherOperatorCount = 0;
-        for(String currentString:stringsWithoutComments){
-                Matcher matchCL = patternCL.matcher(currentString);
-                Matcher matchArithmeticOperators = arithmeticOperatorPattern.matcher(currentString);
-                Matcher matchCompoundOperators = compoundAssignmentOperatorPattern.matcher(currentString);
-                Matcher matchBitwiseOperators = otherOperatorsPattern.matcher(currentString);
-                Matcher matchComparisonOperators = comparisonOperatorPattern.matcher(currentString);
-                Matcher matchCyclicOperators = cyclicOperatorPattern.matcher(currentString);
-                Matcher matchLogicalOperators = logicalOperatorPattern.matcher(currentString);
+        for (String currentString: stringsWithoutComments) {
+            Matcher matchCL = patternCL.matcher(currentString);
+            Matcher matchArithmeticOperators = arithmeticOperatorPattern.matcher(currentString);
+            Matcher matchCompoundOperators = compoundAssignmentOperatorPattern.matcher(currentString);
+            Matcher matchBitwiseOperators = otherOperatorsPattern.matcher(currentString);
+            Matcher matchComparisonOperators = comparisonOperatorPattern.matcher(currentString);
+            Matcher matchCyclicOperators = cyclicOperatorPattern.matcher(currentString);
+            Matcher matchLogicalOperators = logicalOperatorPattern.matcher(currentString);
 
-                while(matchCL.find()){
-                    CL++;
-                }
-                while(matchArithmeticOperators.find()){
-                    arithmeticOperatorCount++;
-                }
-                while(matchCompoundOperators.find()){
-                    compoundAssignmentOperatorCount++;
-                }
-                while(matchComparisonOperators.find()){
-                    comparisonOperatorCount++;
-                }
-                while(matchLogicalOperators.find()){
-                    logicalOperatorCount++;
-                }
-                while(matchCyclicOperators.find()){
-                    cyclicOperatorCount++;
-                }
-                while(matchBitwiseOperators.find()){
-                    otherOperatorCount++;
-                }
+            while (matchCL.find()) {
+                CL++;
+            }
+            while (matchArithmeticOperators.find()) {
+                arithmeticOperatorCount++;
+            }
+            while (matchCompoundOperators.find()) {
+                compoundAssignmentOperatorCount++;
+            }
+            while (matchComparisonOperators.find()) {
+                comparisonOperatorCount++;
+            }
+            while (matchLogicalOperators.find()) {
+                logicalOperatorCount++;
+            }
+            while (matchCyclicOperators.find()) {
+                cyclicOperatorCount++;
+            }
+            while (matchBitwiseOperators.find()) {
+                otherOperatorCount++;
+            }
         }
 
-        numberOfOperators = CL+ arithmeticOperatorCount + compoundAssignmentOperatorCount+cyclicOperatorCount
-                +comparisonOperatorCount+logicalOperatorCount+ otherOperatorCount ;
+        numberOfOperators = CL + arithmeticOperatorCount + compoundAssignmentOperatorCount
+                + cyclicOperatorCount + comparisonOperatorCount + logicalOperatorCount + otherOperatorCount;
 
     }
 
-    public int getLastOvalBracePos(String substring){
+    public int getLastOvalBracePos(String substring) {
         Matcher findIfCL = ifCLMatchPattern.matcher(substring);
         findIfCL.find();
         int countOvalBrace = 0;
         boolean ovalBraceTookPlace = false;
         int i = 0;
-        for(i = findIfCL.start();i<substring.length();i++){
-            if(substring.charAt(i)=='('){
+        for (i = findIfCL.start(); i < substring.length(); i++) {
+            if (substring.charAt(i) == '(') {
                 countOvalBrace++;
                 ovalBraceTookPlace = true;
-            }else if(substring.charAt(i)==')'){
+            } else if (substring.charAt(i) == ')') {
                 countOvalBrace--;
             }
-            if(ovalBraceTookPlace&&countOvalBrace==0){
+            if (ovalBraceTookPlace && countOvalBrace == 0) {
                 break;
             }
         }
         return i;
     }
 
-    public int getFigureBracePos(String substring){
+    public int getFigureBracePos(String substring) {
         Matcher matchBrace = braceMatchPattern.matcher(substring);
         matchBrace.find();
-        int i=0;
-        for(i=matchBrace.start();i<substring.length();i++){
-            if(substring.charAt(i)=='{'){
+        int i = 0;
+        for (i = matchBrace.start(); i < substring.length(); i++) {
+            if (substring.charAt(i) == '{') {
                 break;
             }
         }
         return i;
     }
 
-    public int getLastFigureBracePos(String substring){
+    public int getLastFigureBracePos(String substring) {
         Matcher matchBrace = braceMatchPattern.matcher(substring);
         matchBrace.find();
         int countFigureBrace = 0;
         boolean figureBraceTookPlace = false;
         int i = 0;
-        for(i = matchBrace.start();i<substring.length();i++){
-            if(substring.charAt(i)=='{'){
+        for (i = matchBrace.start(); i < substring.length(); i++) {
+            if (substring.charAt(i) == '{') {
                 countFigureBrace++;
                 figureBraceTookPlace = true;
-            }else if(substring.charAt(i)=='}'){
+            } else if (substring.charAt(i) == '}') {
                 countFigureBrace--;
             }
-            if(figureBraceTookPlace&&countFigureBrace==0){
+            if (figureBraceTookPlace && countFigureBrace == 0) {
                 break;
             }
         }
@@ -174,11 +174,11 @@ public class Jilba extends Metrics {
                 int lastFigureBracePos = getLastFigureBracePos(substring);
                 countMaxCLDepth(depth + 1, substring.substring(figureBracePos + 1, lastFigureBracePos), false);
                 countMaxCLDepth(depth, substring.substring(lastFigureBracePos + 1), false);
-            }else{
-                if(matchIfCL.find()){
+            } else {
+                if (matchIfCL.find()) {
                     int ifCLStart = matchIfCL.start();
                     countMaxCLDepth(depth, substring.substring(ifCLStart), false);
-                }else{
+                } else {
                     depth++;
                     if (depth > maxDepth) {
                         maxDepth = depth;

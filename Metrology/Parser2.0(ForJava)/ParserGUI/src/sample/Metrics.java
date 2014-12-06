@@ -11,21 +11,21 @@ import java.util.regex.Pattern;
  * Created by Роман on 08.11.2014.
  */
 public class Metrics {
-    class Comments{
-        public ArrayList<String> commentsList = new ArrayList<String>();
-        public ArrayList<Boolean> isComment = new ArrayList<Boolean>();
+    class Comments {
+        public ArrayList < String > commentsList = new ArrayList < String > ();
+        public ArrayList < Boolean > isComment = new ArrayList < Boolean > ();
 
-        public Comments(){
+        public Comments() {
             commentsList.clear();
             isComment.clear();
         }
 
-        public void addComment(String currentString){
+        public void addComment(String currentString) {
             commentsList.add(currentString);
             isComment.add(true);
         }
 
-        public void markNonComment(){
+        public void markNonComment() {
             isComment.add(false);
         }
 
@@ -41,31 +41,31 @@ public class Metrics {
 
     protected Comments comments;
 
-    protected ArrayList<String> allStrings = new ArrayList<String>();
-    protected ArrayList<String> stringsWithoutComments = new ArrayList<String>();
-    protected ArrayList<String> sourceCodeStringsOnly = new ArrayList<String>();
+    protected ArrayList < String > allStrings = new ArrayList < String > ();
+    protected ArrayList < String > stringsWithoutComments = new ArrayList < String > ();
+    protected ArrayList < String > sourceCodeStringsOnly = new ArrayList < String > ();
 
-    public Metrics(){
+    public Metrics() {
         allStrings = Controller.getStringsFromTextArea();
         comments = getComments();
         stringsWithoutComments = getStringsWithoutComments();
         sourceCodeStringsOnly = getSourceCodeStringsOnly();
     }
 
-    public ArrayList<String> getStringsWithoutComments(){
-        ArrayList<String> stringsNonComments = new ArrayList<String>();
+    public ArrayList < String > getStringsWithoutComments() {
+        ArrayList < String > stringsNonComments = new ArrayList < String > ();
         stringsNonComments.clear();
         String allCodeInline = Controller.textToAnalyse.getText();
         String codeWithoutCommentsInline = removeComments(allCodeInline);
         int startPos = 0;
         int i = 0;
-        while(i<codeWithoutCommentsInline.length()){
-            if((codeWithoutCommentsInline.charAt(i)=='\n')||(i==codeWithoutCommentsInline.length()-1)){
-                if(i!=0){
-                    String stringToAdd = codeWithoutCommentsInline.substring(startPos,i+1);
-                    stringToAdd = stringToAdd.replaceAll("\n","");
+        while (i < codeWithoutCommentsInline.length()) {
+            if ((codeWithoutCommentsInline.charAt(i) == '\n') || (i == codeWithoutCommentsInline.length() - 1)) {
+                if (i != 0) {
+                    String stringToAdd = codeWithoutCommentsInline.substring(startPos, i + 1);
+                    stringToAdd = stringToAdd.replaceAll("\n", "");
                     stringsNonComments.add(stringToAdd);
-                    startPos = i+1;
+                    startPos = i + 1;
                 }
             }
             i++;
@@ -75,42 +75,42 @@ public class Metrics {
 
     public static String removeCharAt(String s, int pos) {
 
-        return s.substring(0,pos)+" "+s.substring(pos+1);
+        return s.substring(0, pos) + " " + s.substring(pos + 1);
 
     }
 
-    private String removeComments(String sourceCode){
+    private String removeComments(String sourceCode) {
         int typeOfComment = 0;
         int i = 0;
-        while(i<sourceCode.length()){
-            if(typeOfComment==0){
-                if((sourceCode.charAt(i)=='/')&&(sourceCode.charAt(i+1)=='/')){
-                    typeOfComment=INLINE_COMMENT;
-                    sourceCode = removeCharAt(sourceCode,i++);
-                    sourceCode = removeCharAt(sourceCode,i++);
-                }else if((sourceCode.charAt(i)=='/')&&(sourceCode.charAt(i+1)=='*')){
-                    typeOfComment=BEGINNING_OF_MULTILINE_COMMENT;
-                    sourceCode = removeCharAt(sourceCode,i++);
-                    sourceCode = removeCharAt(sourceCode,i++);
-                }else{
+        while (i < sourceCode.length()) {
+            if (typeOfComment == 0) {
+                if ((sourceCode.charAt(i) == '/') && (sourceCode.charAt(i + 1) == '/')) {
+                    typeOfComment = INLINE_COMMENT;
+                    sourceCode = removeCharAt(sourceCode, i++);
+                    sourceCode = removeCharAt(sourceCode, i++);
+                } else if ((sourceCode.charAt(i) == '/') && (sourceCode.charAt(i + 1) == '*')) {
+                    typeOfComment = BEGINNING_OF_MULTILINE_COMMENT;
+                    sourceCode = removeCharAt(sourceCode, i++);
+                    sourceCode = removeCharAt(sourceCode, i++);
+                } else {
                     i++;
                 }
-            }else{
-                if((sourceCode.charAt(i)=='\n')){
-                    if(typeOfComment==INLINE_COMMENT) {
+            } else {
+                if ((sourceCode.charAt(i) == '\n')) {
+                    if (typeOfComment == INLINE_COMMENT) {
                         typeOfComment = 0;
                     }
                     i++;
-                }else if((sourceCode.charAt(i)=='*')&&(sourceCode.charAt(i+1)=='/')){
-                    if(typeOfComment==BEGINNING_OF_MULTILINE_COMMENT){
-                        typeOfComment=0;
-                        sourceCode = removeCharAt(sourceCode,i++);
-                        sourceCode = removeCharAt(sourceCode,i++);
-                    }else{
-                        sourceCode = removeCharAt(sourceCode,i++);
+                } else if ((sourceCode.charAt(i) == '*') && (sourceCode.charAt(i + 1) == '/')) {
+                    if (typeOfComment == BEGINNING_OF_MULTILINE_COMMENT) {
+                        typeOfComment = 0;
+                        sourceCode = removeCharAt(sourceCode, i++);
+                        sourceCode = removeCharAt(sourceCode, i++);
+                    } else {
+                        sourceCode = removeCharAt(sourceCode, i++);
                     }
-                }else{
-                    sourceCode = removeCharAt(sourceCode,i++);
+                } else {
+                    sourceCode = removeCharAt(sourceCode, i++);
                 }
 
             }
@@ -118,17 +118,17 @@ public class Metrics {
         return sourceCode;
     }
 
-    public ArrayList<String> getSourceCodeStringsOnly(){
-        ArrayList<String> sourceCodeStrings = new ArrayList<String>();
-        for(String currentString:stringsWithoutComments){
-            if(!((currentString.isEmpty()==true)||(currentString.matches("[ \t\n]{1,}")))){
+    public ArrayList < String > getSourceCodeStringsOnly() {
+        ArrayList < String > sourceCodeStrings = new ArrayList < String > ();
+        for (String currentString: stringsWithoutComments) {
+            if (!((currentString.isEmpty() == true) || (currentString.matches("[ \t\n]{1,}")))) {
                 sourceCodeStrings.add(currentString);
             }
         }
         return sourceCodeStrings;
     }
 
-    private boolean matchString(String stringToTest, String regEx){
+    private boolean matchString(String stringToTest, String regEx) {
         Pattern pattern = Pattern.compile(regEx);
         Matcher matcher = pattern.matcher(stringToTest);
         return matcher.matches();
@@ -151,51 +151,54 @@ public class Metrics {
         while (matchClosingSlash.find()) {
             closingSlashPos = matchClosingSlash.start();
         }
-        if ((doubleSlashFirstPos < openingSlashPos) ||
-                ((openingSlashPos < closingSlashPos) && closingSlashPos != INFINITY)) {
+        if ((doubleSlashFirstPos < openingSlashPos)
+                || ((openingSlashPos < closingSlashPos) && closingSlashPos != INFINITY)) {
             return INLINE_COMMENT;
-        }else if (((openingSlashPos > closingSlashPos) && openingSlashPos != INFINITY) ||
-                (openingSlashPos < closingSlashPos) && closingSlashPos == INFINITY) {
+        } else if (((openingSlashPos > closingSlashPos) && openingSlashPos != INFINITY)
+                || (openingSlashPos < closingSlashPos) && closingSlashPos == INFINITY) {
             return BEGINNING_OF_MULTILINE_COMMENT;
-        }else{
+        } else {
             return 0;
         }
     }
 
-    public boolean hasCommentClosingSlash(String stringToMatch){
+    public boolean hasCommentClosingSlash(String stringToMatch) {
         String commentClosingSlash = "(.)*[*]/(.)*";
-        if(matchString(stringToMatch,commentClosingSlash)){
+        if (matchString(stringToMatch, commentClosingSlash)) {
             return true;
-        }else{
+        } else {
             return false;
         }
     }
 
-    public Comments getComments(){
+    public Comments getComments() {
         Comments comments = new Comments();
         boolean multilineComment = false;
-        for(String currentString:allStrings){
-            if(multilineComment){
+        for (String currentString: allStrings) {
+            if (multilineComment) {
                 comments.addComment(currentString);
-                if(hasCommentClosingSlash(currentString)){
-                    if(typeOfString(currentString)==BEGINNING_OF_MULTILINE_COMMENT){
+                if (hasCommentClosingSlash(currentString)) {
+                    if (typeOfString(currentString) == BEGINNING_OF_MULTILINE_COMMENT) {
                         multilineComment = true;
-                    }else{
+                    } else {
                         multilineComment = false;
                     }
                 }
-            }else{
-                switch(typeOfString(currentString)){
-                    case INLINE_COMMENT:{
+            } else {
+                switch (typeOfString(currentString)) {
+                    case INLINE_COMMENT:
+                    {
                         comments.addComment(currentString);
                         break;
                     }
-                    case BEGINNING_OF_MULTILINE_COMMENT: {
+                    case BEGINNING_OF_MULTILINE_COMMENT:
+                    {
                         comments.addComment(currentString);
                         multilineComment = true;
                         break;
                     }
-                    default:{
+                    default:
+                    {
                         comments.markNonComment();
                     }
                 }
